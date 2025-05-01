@@ -1,50 +1,50 @@
 # Movie Explorer
 
-Movie Explorer è un progetto web che permette di gestire e consultare un catalogo di film e registi, con funzionalità di ricerca avanzata in linguaggio naturale. Il sistema è composto da un backend (FastAPI + MariaDB) e un frontend (FastAPI + Jinja2), orchestrati tramite Docker Compose.
+Movie Explorer is a web project that allows you to manage and browse a catalog of movies and directors, with advanced natural language search functionality. The system consists of a backend (FastAPI + MariaDB) and a frontend (FastAPI + Jinja2), orchestrated via Docker Compose.
 
-## Funzionalità
+## Features
 
-- Ricerca di film e registi tramite domande in linguaggio naturale
-- Visualizzazione dettagliata di film, registi e piattaforme
-- Aggiunta di nuovi film e registi
-- Visualizzazione dello schema del database
+- Search for movies and directors using natural language queries
+- Detailed view of movies, directors, and platforms
+- Add new movies and directors
+- View the database schema
 
-## Struttura del progetto
+## Project Structure
 
-- `backend/`: codice e dati del backend (API, popolamento database)
-- `frontend/`: codice del frontend (interfaccia web, template, static)
-- `mariadb_init/`: script di inizializzazione del database
-- `docker-compose.yaml`: orchestrazione dei servizi
-- `mariadb_data/`: dati persistenti del database (non versionati)
+- `backend/`: backend code and data (API, database population)
+- `frontend/`: frontend code (web interface, templates, static files)
+- `mariadb_init/`: database initialization scripts
+- `docker-compose.yaml`: service orchestration
+- `mariadb_data/`: persistent database data (not versioned)
 
-## Requisiti
+## Requirements
 
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
-## Avvio rapido
+## Quick Start
 
-1. Clona il repository:
+1. Clone the repository:
     ```sh
     git clone <repo-url>
     cd esonero
     ```
 
-2. Avvia tutti i servizi (backend, frontend, database) con:
+2. Start all services (backend, frontend, database) with:
     ```sh
     docker-compose up --build
     ```
 
-3. Accedi al frontend all’indirizzo:  
+3. Access the frontend at:  
    [http://localhost:8001](http://localhost:8001)
 
-## Comandi utili
+## Useful Commands
 
-- **Ricostruire i container:**  
+- **Rebuild containers:**  
   ```sh
     docker-compose up --build
     ```
-- **distruggere i container:**      
+- **Destroy containers:**      
     ```sh
     docker-compose down -v
     ```
