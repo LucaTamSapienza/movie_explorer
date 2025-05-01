@@ -26,8 +26,8 @@ Movie Explorer is a web project that allows you to manage and browse a catalog o
 
 1. Clone the repository:
     ```sh
-    git clone <repo-url>
-    cd esonero
+    git clone https://github.com/LucaTamSapienza/movie_explorer
+    cd movie_explorer
     ```
 
 2. Start all services (backend, frontend, database) with:
