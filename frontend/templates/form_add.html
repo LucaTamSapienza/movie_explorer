@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Aggiungi/Aggiorna Film</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="container" style="max-width: 600px;">
+        <nav style="width: 100%; 
+                    display: flex; 
+                    justify-content: flex-start;">
+            <a href="/" class="main-btn-home">
+                <i class="fa-solid fa-house icon"></i> Home
+            </a>
+        </nav>
+        <h2 class="title" style="margin-bottom: 1.2rem; 
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center; 
+                                gap: 0.7rem;">
+            <i class="fa-solid fa-plus icon"></i> Aggiungi/aggiorna film
+        </h2>
+        <p class="welcome-text" style="margin-bottom: 1.2rem;">
+            Inserisci i dati di un nuovo film o aggiorna uno esistente compilando i campi richiesti.
+        </p>
+        <form method="post" action="/add" style="width:100%;">
+            <textarea
+                name="data_line"
+                class="big-textarea"
+                rows="2"
+                placeholder="titolo, regista_nome, eta, anno, genere, piattaforma_1, piattaforma_2"
+                required
+                style="margin-bottom: 1.2rem;"
+            ></textarea>
+            <button type="submit" class="main-btn-home" style="padding: 0.9rem 2.2rem; 
+                                                                font-size: 1.13rem; 
+                                                                border-radius: 1rem;">
+                <i class="fa-solid fa-plus icon"></i> Aggiungi/Aggiorna
+            </button>
+        </form>
+        {% if result %}
+            {% if result.status == "errore" %}
+                <div class="msg-error" style="background: #fee2e2; 
+                                            color: #991b1b; 
+                                            border-radius: 8px; 
+                                            padding: 12px; 
+                                            margin-top: 18px;">
+                    {{ result.message }}
+                </div>
+            {% else %}
+                <div class="msg-success" style="background: #bbf7d0; 
+                                                color: #166534; 
+                                                border-radius: 8px; 
+                                                padding: 12px; 
+                                                margin-top: 18px;">
+                    Aggiunta/aggiornamento riuscito!
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>

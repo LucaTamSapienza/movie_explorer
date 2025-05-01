@@ -1,0 +1,49 @@
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: esonero-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: filmcatalogo
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pwd
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mariadb_data:/var/lib/mysql
+      - ./mariadb_init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"] # see https://mariadb.com/kb/en/using-healthcheck-sh/ for more information on this test
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  backend:
+    build:
+      context: ./backend # Dockerfile in backend directory, no need to specify
+    container_name: esonero-backend
+    volumes:
+      - ./backend/data.tsv:/app/data.tsv
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "8003:8003"
+    environment:
+      - BACKEND_URL=http://backend:8003
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USER=user
+      - DB_PASSWORD=pwd
+      - DB_NAME=filmcatalogo
+
+  frontend:
+    build:
+      context: ./frontend # Dockerfile in frontend directory, no need to specify
+    container_name: esonero-frontend
+    ports:
+      - "8001:8001"
+    depends_on:
+      - backend
+    environment:
+      - BACKEND_URL=http://backend:8003

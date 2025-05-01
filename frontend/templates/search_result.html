@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Risultati della Ricerca</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- A little script to randomize the image, since I wanted to keep the images folder low on MB -->
+    <script>
+      function getCoverSrc(key) {
+        const COVER_COUNT = 6;
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) hash = key.charCodeAt(i) + ((hash << 5) - hash);
+        const idx = Math.abs(hash) % COVER_COUNT + 1;
+        return `/static/cover${idx}.jpg`;
+      }
+      window.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.film-img, .film-popup-img').forEach(img => {
+          const key = img.dataset.key || '';
+          if (key) img.src = getCoverSrc(key);
+        });
+      });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <nav style="width: 100%; 
+                    display: flex; 
+                    justify-content: 
+                    flex-start;">
+            <a href="/" class="main-btn-home">
+                <i class="fa-solid fa-house icon"></i> Home
+            </a>
+        </nav>
+        <h1 class="title"><i class="fa-solid fa-magnifying-glass icon"></i> Cerca un film</h1>
+        <form method="get" action="/search">
+            <div class="supported-questions-card">
+              <b><i class="fa-solid fa-film" style="margin-right:0.5em"></i>Domande supportate:</b>
+              <ul>
+                <li>Elenca i film del &lt;ANNO&gt;.</li>
+                <li>Quali sono i registi presenti su Netflix?</li>
+                <li>Elenca tutti i film di fantascienza.</li>
+                <li>Quali film sono stati fatti da un regista di almeno &lt;ANNI&gt; anni?</li>
+                <li>Quali registi hanno fatto più di un film?</li>
+              </ul>
+            </div>
+            <textarea name="question" class="big-textarea" rows="2" placeholder="Scrivi una domanda (es: Elenca i film del 2000.)" required>{{ question }}</textarea>
+            <button type="submit" class="main-btn-home" style="margin-top:1rem;">
+                <i class="fa-solid fa-magnifying-glass icon"></i> Cerca
+            </button>
+        </form>
+        <h3 style="margin-top:2rem;">Risultati per: <span style="color:#ffb92a;">{{ question }}</span></h3>
+        {% if result and result|length > 0 %}
+          {% for item in result %}
+            {% set data = {} %}
+            {% for p in item.properties %}
+              {% set _ = data.update({p.property_name: p.property_value}) %}
+            {% endfor %}
+            {% if item.item_type == "film" %}
+              <!-- FilmCard: mostra immagine e tutti i dettagli -->
+              <div class="film-card">
+                <img class="film-img" data-key="{{ data.name or data.titolo or '' }}" alt="{{ data.name or data.titolo or 'Movie' }}" onerror="this.src='/static/cover1.jpg'">
+                <div class="flex-1 flex-col">
+                  <div class="film-title">{{ data.name }}</div>
+                  <div class="film-meta"><b>Anno:</b> {{ data.year }} <b>Genere:</b> {{ data.genere }}</div>
+                  <div class="film-meta">
+                    <b>Piattaforme:</b>
+                    {% if data.piattaforma_1 or data.piattaforma_2 %}
+                      {{ data.piattaforma_1 }}{% if data.piattaforma_2 %}, {{ data.piattaforma_2 }}{% endif %}
+                    {% else %}
+                      Nessuna
+                    {% endif %}
+                  </div>
+                  {% if data.director_nome %}
+                    <div class="film-meta"><b>Regista:</b> {{ data.director_nome }}</div>
+                  {% endif %}
+                  {% if data.eta %}
+                    <div class="film-meta"><b>Età regista:</b> {{ data.eta }}</div>
+                  {% endif %}
+                </div>
+                <div class="film-popup">
+                  <img class="film-popup-img" data-key="{{ data.name or data.titolo or '' }}" alt="{{ data.name or data.titolo or 'Movie' }}">
+                  <div class="film-popup-details">
+                    <div class="film-title">{{ data.name }}</div>
+                    <div class="film-meta"><b>Anno:</b> {{ data.year}}</div>
+                    <div class="film-meta"><b>Genere:</b> {{ data.genere }}</div>
+                    <div class="film-meta">
+                      <b>Piattaforme:</b>
+                      {% if data.piattaforma_1 or data.piattaforma_2 %}
+                        {{ data.piattaforma_1 }}{% if data.piattaforma_2 %}, {{ data.piattaforma_2 }}{% endif %}
+                      {% else %}
+                        Nessuna
+                      {% endif %}
+                    </div>
+                    {% if data.director_nome %}
+                      <div class="film-meta"><b>Regista:</b> {{ data.director_nome }}</div>
+                    {% endif %}
+                    {% if data.eta %}
+                      <div class="film-meta"><b>Età regista:</b> {{ data.eta }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% elif item.item_type == "director" %}
+              <!-- DirectorCard: solo nome, età (e numero film) -->
+              <div class="film-card" style="background:rgba(35,40,58,0.97); 
+                                            position:relative; 
+                                            z-index:2;">
+                <div class="flex-1 flex-col" style="justify-content:center;">
+                  <div class="film-title">{{ data.name }}</div>
+                  <div class="film-meta">
+                    <b>Età:</b> {{ data.eta }}
+                    {% if data.numero_film %}
+                      <br><b>Numero film:</b> {{ data.numero_film }}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% elif item.item_type == "Errore" %}
+              <div class="result">{{ data.errore }}</div>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <div class="result">Nessun risultato trovato.</div>
+        {% endif %}
+        <hr class="divider">
+    </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Schema del Database</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="container" style="max-width: 700px;">
+        <nav style="margin-bottom: 1.5rem; 
+                    width: 100%; 
+                    display: flex; 
+                    justify-content: flex-start;">
+            <a href="/" class="main-btn-home">
+                <i class="fa-solid fa-house icon"></i> Home
+            </a>
+        </nav>
+        <h2 class="title" style="margin-bottom: 1.2rem; 
+                                display: flex; 
+                                align-items: center; 
+                                gap: 0.7rem;">
+            <i class="fa-solid fa-database icon"></i> Schema Database
+        </h2>
+        {% if searchError %}
+            <div class="msg-error" style="background: #fee2e2; 
+                                        color: #991b1b; 
+                                        border-radius: 8px; 
+                                        padding: 12px; 
+                                        margin-bottom: 18px;">
+                {{ searchError }}
+            </div>
+        {% endif %}
+        {% if loading %}
+            <div class="result">Caricamento...</div>
+        {% else %}
+        <div class="schema-table-wrapper">
+            <table class="schema-table">
+                <thead>
+                    <tr>
+                        <th>Tabella</th>
+                        <th>Colonna</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in schema %}
+                    <tr>
+                        <td>{{ entry.table_name }}</td>
+                        <td>{{ entry.table_column }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
